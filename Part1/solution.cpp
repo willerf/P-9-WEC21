@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -27,8 +28,6 @@ int wordTime(string word, map<int, string> buttonCharacters, map<char, int> char
 
         int letterPosition = buttonCharacters[characterButtons[lowercaseWord[i]]].find(lowercaseWord[i]);
         time += letterPosition + 1;
-
-        cout << time << endl;
     }
 
     return time - 1;
@@ -57,7 +56,39 @@ int main() {
         {'w', 9}, {'x', 9}, {'y', 9}, {'z', 9}
     };
 
-    
+    vector<string> words;
+
+    ifstream indata;
+    string input;
+    indata.open("Test1.txt");
+    if(!indata) {
+        cerr << "Error: file could not be opened" << endl;
+        exit(1);
+    }
+
+    indata >> input;
+    words.push_back(input);
+    while (!indata.eof()) {
+        indata >> input;
+        words.push_back(input);
+    }
+    indata.close();
+
+    vector<int> times;
+    int minimumTime = 1000000;
+    for(int i = 0; i < words.size(); i++) {
+        int currentTime = wordTime(words[i], buttonCharacters, characterButtons);
+        times.push_back(currentTime);
+        if(currentTime < minimumTime) {
+            minimumTime = currentTime;
+        }
+    }
+
+    for(int i = 0; i < words.size(); i++) {
+        if(times[i] == minimumTime) {
+            cout << words[i] << " = " << minimumTime / 4.0 << "s\n";
+        }
+    }
 
     return 0;
 }
